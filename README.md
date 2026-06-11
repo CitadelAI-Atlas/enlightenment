@@ -57,8 +57,9 @@ We hold this work to a deliberately cautious standard:
 - `docs/`: theory, design decisions, and methodology (numbered, in order written)
 - `specs/`: formal specifications of the program (the arc as data)
 - `journal/`: dated lab notebook: what we tried, what happened, what we changed
-- `src/`: the generator (to come)
-- `renders/`: versioned audio output (to come)
+- `src/`: the generator (Python, numpy; see `docs/05-generator-design.md`)
+- `renders/`: audio output (reproducible from spec, options, and seed; not
+  committed)
 
 ## Principles
 
@@ -74,6 +75,7 @@ We hold this work to a deliberately cautious standard:
 
 ## Status
 
-**Phase 0: Foundations.** Charter written, arc v0 specified as a normalized contour,
-creative direction documented, publication style adopted. Next: literature research
-to harden the spec, then generator v1.
+**Phase 1: Build.** Charter written, arc v0 specified as a normalized contour,
+publication style adopted, and generator v1 working: deterministic renders at any
+duration, with all experimental variables as flags. Literature research to harden
+and freeze the spec is in progress.

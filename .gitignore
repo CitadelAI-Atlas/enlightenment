@@ -7,3 +7,5 @@ next-env.d.ts
 renders/*.wav
 renders/*.flac
 .vercel
+.venv/
+renders/
