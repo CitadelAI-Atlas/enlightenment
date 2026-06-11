@@ -75,7 +75,8 @@ We hold this work to a deliberately cautious standard:
 
 ## Status
 
-**Phase 1: Build.** Charter written, arc v0 specified as a normalized contour,
-publication style adopted, and generator v1 working: deterministic renders at any
-duration, with all experimental variables as flags. Literature research to harden
-and freeze the spec is in progress.
+**Phase 2: Trials.** Verification pass one is complete (25 claims adversarially
+verified, 0 refuted; see `docs/02-research-report.md`) and the arc is frozen at
+v1 in two contour variants. Generator v1 renders either contour
+deterministically at any duration. Next: first listening trials and research
+pass two.

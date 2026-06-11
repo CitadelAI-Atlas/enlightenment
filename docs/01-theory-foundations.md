@@ -1,8 +1,9 @@
 # 01 - Theory Foundations
 
-*Written 2026-06-11. Status: drafted from working knowledge. Each item below needs
-verification against the primary sources before the spec is frozen. See the open
-questions at the bottom.*
+*Written 2026-06-11. Status: superseded in part. This document was drafted from
+working knowledge before verification; the open questions below were answered in
+`02-research-report.md`, whose evidence grades are authoritative where the two
+disagree. Kept unedited as a record of what we believed before checking.*
 
 ## The three traditions we synthesize
 
