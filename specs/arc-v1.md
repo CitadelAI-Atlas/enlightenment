@@ -44,8 +44,9 @@ Descent-weighted variant boundaries: 0-9%, 9-27%, 27-45%, 45-70%, 70-100%.
 1. No event is abrupt; transitions span roughly 1.5 to 3 percent of duration.
 2. Intensity is density plus harmonic tension plus register, never loudness
    spikes.
-3. Rhythm front-loaded, melody back-loaded (traditional practice; primary
-   source still unverified, see docs/02 Q1).
+3. Rhythm front-loaded, melody back-loaded (verified against the primary
+   protocol document in pass two; see docs/06. The contour is unchanged; this
+   is a label correction only).
 4. Nested tension and release cycles inside the master contour (Bonny).
 5. Beat-frequency ramps are continuous, never stepped.
 
