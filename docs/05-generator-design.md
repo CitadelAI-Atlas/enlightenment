@@ -55,6 +55,29 @@ python -m enlightenment --spec specs/arc-v0.json --duration-min <N> \
 
 Duration is always explicit. It is an experimental variable, never a default.
 
+## Distribution formats
+
+The 24-bit WAV is the archival reference (reproducible from spec, options, and
+seed, so it is never committed). For distribution, `scripts/encode.sh`
+produces:
+
+- **MP3, 320 kbps CBR, forced left/right stereo.** Joint stereo is disabled
+  on purpose: the entrainment layer depends on each channel keeping its own
+  carrier. Verified by decoding the MP3 and re-measuring the interaural
+  difference at the session midpoint: 5.00 Hz against a spec value of 5.0,
+  unchanged from the WAV.
+- **AAC, 256 kbps (m4a)** as a smaller alternative.
+
+A full-length session encodes to roughly one seventh of the WAV size as MP3.
+
+## Listening protocol notes
+
+- Headphones are required for the binaural variant; the beat frequency exists
+  only when each ear receives its own carrier.
+- On Apple headphones, disable Spatialize Audio and head tracking for trials.
+  Spatial processing remixes the channels through HRTF filters and would
+  degrade the interaural separation. Noise cancellation is fine.
+
 ## Known limitations (v1)
 
 - Nested tension cycles within movements (Bonny) are only coarsely encoded in
