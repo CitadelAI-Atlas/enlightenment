@@ -1,0 +1,9 @@
+node_modules/
+.next/
+.vercel/
+next-env.d.ts
+*.tsbuildinfo
+.DS_Store
+renders/*.wav
+renders/*.flac
+.vercel
