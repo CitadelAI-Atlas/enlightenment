@@ -66,13 +66,24 @@ class DroneLayer:
         self.partial_amps = 1.0 / np.arange(1, self.N_PARTIALS + 1) ** 1.7
         self.swells = [Drift(ctx.rng, rate=0.08, depth=0.25) for _ in self.voices]
         self.swell_vals = np.zeros(len(self.voices))
+        # Nested tension and release cycles inside the master contour (Bonny):
+        # several rise-and-fall waves per movement, with a drifting phase so
+        # they never align mechanically.
+        self.cycle_rate = 14.0
+        self.cycle_phase = float(ctx.rng.uniform(0.0, 1.0))
+        self.cycle_drift = Drift(ctx.rng, rate=0.04, depth=0.15)
 
     def render(self, tau, n, breath_env):
         ctx = self.ctx
         cents = ctx.curves["detune_cents"].at(tau)
         width = ctx.curves["spatial_width"].at(tau)
-        gain = ctx.curves["drone_gain"].at(tau) * breath_env
-        tension = ctx.curves["harmonic_tension"].at(tau)
+        nested = np.sin(
+            TWO_PI * (tau * self.cycle_rate + self.cycle_phase + self.cycle_drift.next())
+        )
+        gain = ctx.curves["drone_gain"].at(tau) * breath_env * (1.0 + 0.06 * nested)
+        tension = np.clip(
+            ctx.curves["harmonic_tension"].at(tau) * (1.0 + 0.35 * nested), 0.0, 1.2
+        )
         out = np.zeros((n, 2))
 
         for i, (ratio, d, pan_pos, vgain) in enumerate(self.voices):
@@ -293,6 +304,13 @@ class EventsLayer(EventScheduler):
         self.thump = _heartbeat_thump(ctx.sr)
         self.bell = _bell(ctx.sr, ctx.root_hz * 4.0)
         super().__init__(ctx, len(self.bell))
+        # Droplet kernel for the rain: a short bright ping plus a small body,
+        # so individual drops read as drops over the noise bed.
+        t = np.arange(int(0.006 * ctx.sr)) / ctx.sr
+        kern = np.sin(TWO_PI * 3800.0 * t) * np.exp(-t * 900.0)
+        kern += 0.4 * np.sin(TWO_PI * 1400.0 * t) * np.exp(-t * 500.0)
+        self.drop_kernel = kern * 0.6
+        self.rain_drift = Drift(ctx.rng, rate=0.15, depth=0.3)
         ev = ctx.spec["events"]
         self.hb_windows = [
             (ev["heartbeat_open"]["tau"], ev["heartbeat_open"]["until_tau"]),
@@ -328,16 +346,30 @@ class EventsLayer(EventScheduler):
         env = np.where((pos > 0) & (pos < 1), np.sin(np.pi * np.clip(pos, 0, 1)) ** 2, 0.0)
         if float(np.max(env)) < 1e-4:
             return None
-        noise = self.ctx.rng.standard_normal(n)
-        out = np.empty(n)
-        # One-pole lowpass for a soft, distant character.
+        # Shower intensity wanders rather than swelling symmetrically.
+        env = env * (0.75 + 0.25 * abs(self.rain_drift.next()))
+        rng = self.ctx.rng
+        # Bed: lowpassed noise, the distant wash.
+        noise = rng.standard_normal(n)
+        bed = np.empty(n)
         k = 0.12
         s = self.lp_state
         for i in range(n):
             s += k * (noise[i] - s)
-            out[i] = s
+            bed[i] = s
         self.lp_state = s
-        return np.stack([out, out], axis=1) * (env * 0.16)[:, None]
+        # Droplets: sparse transients, independent per channel, density
+        # following the envelope.
+        chans = []
+        for _ in range(2):
+            impulses = np.zeros(n)
+            mask = rng.random(n) < env * (320.0 / self.ctx.sr)
+            count = int(np.sum(mask))
+            if count:
+                impulses[mask] = rng.uniform(0.25, 1.0, count)
+            chans.append(np.convolve(impulses, self.drop_kernel)[:n])
+        out = np.stack([bed * 0.4 + chans[0], bed * 0.4 + chans[1]], axis=1)
+        return out * (np.sqrt(env) * 0.2)[:, None]
 
     def render(self, t0_sec, n, tau_of, tau):
         ctx = self.ctx

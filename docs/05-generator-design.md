@@ -78,13 +78,29 @@ A full-length session encodes to roughly one seventh of the WAV size as MP3.
   Spatial processing remixes the channels through HRTF filters and would
   degrade the interaural separation. Noise cancellation is fine.
 
-## Known limitations (v1)
+## Changes in generator v0.2 (2026-06-11, after the first shakedown listen)
 
-- Nested tension cycles within movements (Bonny) are only coarsely encoded in
-  the `harmonic_tension` breakpoints; a dedicated nested-cycle modulator is
-  planned for v2.
+- **Rain rebuilt.** The first listen flagged that the rain read as wind: it
+  was a lowpassed noise swell with no droplet detail. It is now a noise bed
+  plus sparse droplet transients (bright 6 ms pings, independent per channel,
+  density following the envelope), with shower intensity that wanders rather
+  than swelling symmetrically. Verified by band analysis: droplet-band energy
+  is present in the rain window where there was effectively none.
+- **Nested tension cycles implemented** (Bonny): a slow rise-and-fall wave,
+  several cycles per movement with drifting phase, now modulates harmonic
+  tension and drone level inside the master contour. This addresses the
+  "very stable" note from the shakedown listen without touching the frozen
+  v1 contour, which this modulation sits inside.
+- **Cue sheets and chapters.** `scripts/cuesheet.py` generates a table of
+  contents for any render (movement and event times at the chosen duration)
+  plus chapter metadata that `scripts/encode.sh` embeds in the m4a.
+
+## Known limitations (v0.2)
+
 - The gamma shimmer overlay at the peak is deferred.
-- The rain swell does not yet resolve rhythmically into the drum pattern; it
-  is currently a plain filtered-noise swell.
+- The rain recedes but does not yet resolve rhythmically into the drum
+  pattern.
+- The leitmotif is not yet planted as overtone coloration in the Threshold
+  (creative commitment 4); it first appears in the Heart.
 - Render verification is spectral and statistical; listening trials are the
-  real test and have not happened yet.
+  real test.
