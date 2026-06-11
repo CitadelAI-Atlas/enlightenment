@@ -18,6 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               enlightenment
             </Link>
             <span className="links">
+              <Link href="/player">player</Link>
               <Link href="/docs">docs</Link>
               <Link href="/specs">specs</Link>
               <Link href="/journal">journal</Link>

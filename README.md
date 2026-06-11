@@ -77,6 +77,8 @@ We hold this work to a deliberately cautious standard:
 
 **Phase 2: Trials.** Verification pass one is complete (25 claims adversarially
 verified, 0 refuted; see `docs/02-research-report.md`) and the arc is frozen at
-v1 in two contour variants. Generator v1 renders either contour
-deterministically at any duration. Next: first listening trials and research
-pass two.
+v1 in two contour variants. The generator renders either contour
+deterministically at any duration, and the web player synthesizes the program
+live in the browser with every experimental variable as a control and public
+session reports (see `docs/07-web-player.md`). Research pass two is in
+progress; first listening trials are next.
